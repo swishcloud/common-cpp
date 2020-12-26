@@ -100,6 +100,9 @@ int common::find_files(std::string path, std::vector<std::string>& files)
 	}
 }
 char* common::strncpy(const char* source) {
+	if (!source) {
+		return NULL;
+	}
 	int size = strlen(source) + 1;
 	char* const cpy = new char[size];
 	::strncpy(cpy, source, size);
