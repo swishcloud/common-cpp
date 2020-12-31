@@ -9,8 +9,6 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 target_include_directories(common PRIVATE include)
 include(GNUInstallDirs)
 install(DIRECTORY include/ TYPE INCLUDE  FILES_MATCHING REGEX  "[^/]*.h$")
-#TARGET_INCLUDE_DIRECTORIES(common PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-#install(FILES "include/common.h" DESTINATION include)
 install(TARGETS common EXPORT commonTargets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
