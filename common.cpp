@@ -14,7 +14,7 @@ public:
 	common_exception(std::string err) : err{err}
 	{
 	}
-	virtual const char *what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_USE_NOEXCEPT override
+	const char *what() const noexcept override
 	{
 		return err.c_str();
 	}
