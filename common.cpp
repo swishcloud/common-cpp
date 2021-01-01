@@ -5,6 +5,7 @@
 #ifdef __linux__
 #else
 #include <windows.h>
+#include <locale.h>
 #endif
 #include <dirent.h>
 class common_exception : public std::exception
@@ -28,10 +29,11 @@ wchar_t *common::to_wcstr(const char *orig)
 #ifdef __linux__
 	throw PLATFORM_NOT_SUPPORTED();
 #else
+	throw PLATFORM_NOT_SUPPORTED();
 	size_t newsize = strlen(orig) + 1;
 	wchar_t *wcstring = new wchar_t[newsize];
-	_locale_t locale = _create_locale(LC_ALL, "zh-CN");
-	size_t convertedChars = _mbstowcs_l(wcstring, orig, newsize, locale);
+	/*_locale_t locale = ::_create_locale(LC_ALL, "zh-CN");
+	size_t convertedChars = ::_mbstowcs_l(wcstring, orig, newsize, locale);*/
 	return wcstring;
 #endif
 }
@@ -43,8 +45,9 @@ char *common::to_cstr(const wchar_t *orig)
 	size_t origsize = wcslen(orig) + 1;
 	const size_t newsize = origsize * 2;
 	char *cstring = new char[newsize];
-	_locale_t locale = _create_locale(LC_ALL, "zh-CN");
-	_wcstombs_l(cstring, orig, newsize, locale);
+	throw PLATFORM_NOT_SUPPORTED();
+	/*_  locale_t locale = _create_locale(LC_ALL, "zh-CN");
+	_wcstombs_l(cstring, orig, newsize, locale); */
 	return cstring;
 #endif
 }
