@@ -2,11 +2,6 @@
 #include "common.h"
 #include <iostream>
 #include <memory>
-#ifdef __linux__
-#else
-#include <windows.h>
-#include <locale.h>
-#endif
 #include <dirent.h>
 class common_exception : public std::exception
 {
@@ -167,4 +162,36 @@ char *common::strncpy(const char *source)
 	char *const cpy = new char[size];
 	::strncpy(cpy, source, size);
 	return cpy;
+}
+
+std::string GetLastErrorMsg(LPTSTR lpszFunction)
+{
+#ifdef __linux__
+	throw PLATFORM_NOT_SUPPORTED();
+#endif
+	// Retrieve the system error message for the last-error code
+
+	LPVOID lpMsgBuf;
+	LPVOID lpDisplayBuf;
+	DWORD dw = GetLastError();
+
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER |
+			FORMAT_MESSAGE_FROM_SYSTEM |
+			FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL,
+		dw,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR)&lpMsgBuf,
+		0, NULL);
+
+	// Display the error message and exit the process
+
+	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+									  (lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)lpszFunction) + 40) * sizeof(TCHAR));
+	auto str = common::string_format("%s failed with error %d: %s",
+									 lpszFunction, dw, lpMsgBuf);
+	LocalFree(lpMsgBuf);
+	LocalFree(lpDisplayBuf);
+	return str;
 }

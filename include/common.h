@@ -7,6 +7,11 @@
 #include <memory>
 #include <cstring>
 #include <filesystem>
+#ifdef __linux__
+#else
+#include <locale.h>
+#include <windows.h>
+#endif
 namespace common
 {
 	template <typename... Arg>
@@ -21,6 +26,7 @@ namespace common
 	int find_files(std::wstring path, std::vector<std::wstring> &files);
 	int find_files(std::string path, std::vector<std::string> &files);
 	char *strncpy(const char *source);
+	std::string GetLastErrorMsg(LPTSTR lpszFunction);
 } // namespace common
 
 template <typename... Arg>
