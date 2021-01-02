@@ -97,7 +97,7 @@ void common::run_file(const wchar_t *filename)
 #ifdef __linux__
 	throw PLATFORM_NOT_SUPPORTED();
 #else
-	ShellExecuteW(GetForegroundWindow(), L"open", filename, NULL, NULL, SW_SHOWNORMAL);
+	throw PLATFORM_NOT_SUPPORTED(); //ShellExecuteW(GetForegroundWindow(), L"open", filename, NULL, NULL, SW_SHOWNORMAL);
 #endif
 }
 int common::find_files(std::wstring path, std::vector<std::wstring> &files)
@@ -164,7 +164,7 @@ char *common::strncpy(const char *source)
 	return cpy;
 }
 
-std::string GetLastErrorMsg(LPTSTR lpszFunction)
+std::string common::GetLastErrorMsg(LPTSTR lpszFunction)
 {
 #ifdef __linux__
 	throw PLATFORM_NOT_SUPPORTED();
@@ -191,7 +191,8 @@ std::string GetLastErrorMsg(LPTSTR lpszFunction)
 									  (lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)lpszFunction) + 40) * sizeof(TCHAR));
 	auto str = common::string_format("%s failed with error %d: %s",
 									 lpszFunction, dw, lpMsgBuf);
+	auto r = str;
 	LocalFree(lpMsgBuf);
 	LocalFree(lpDisplayBuf);
-	return str;
+	return r;
 }
