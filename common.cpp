@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <dirent.h>
+#include <assert.h>
 class common_exception : public std::exception
 {
 public:
@@ -24,25 +25,34 @@ wchar_t *common::to_wcstr(const char *orig)
 #ifdef __linux__
 	throw PLATFORM_NOT_SUPPORTED();
 #else
-	throw PLATFORM_NOT_SUPPORTED();
 	size_t newsize = strlen(orig) + 1;
 	wchar_t *wcstring = new wchar_t[newsize];
-	/*_locale_t locale = ::_create_locale(LC_ALL, "zh-CN");
-	size_t convertedChars = ::_mbstowcs_l(wcstring, orig, newsize, locale);*/
+	_locale_t locale = ::_create_locale(LC_ALL, "zh-CN");
+	size_t convertedChars = ::_mbstowcs_l(wcstring, orig, newsize, locale);
 	return wcstring;
 #endif
 }
-char *common::to_cstr(const wchar_t *orig)
+char *common::to_cstr(const wchar_t *orig, int size)
 {
 #ifdef __linux__
 	throw PLATFORM_NOT_SUPPORTED();
 #else
+	char *buf = NULL;
+	if (size != -1)
+	{
+		buf = new char[size + 2];
+		memcpy(buf, orig, size);
+		buf[size] = '\0';
+		buf[size + 1] = '\0';
+		orig = (wchar_t *)buf;
+	}
+
 	size_t origsize = wcslen(orig) + 1;
 	const size_t newsize = origsize * 2;
 	char *cstring = new char[newsize];
-	throw PLATFORM_NOT_SUPPORTED();
-	/*_  locale_t locale = _create_locale(LC_ALL, "zh-CN");
-	_wcstombs_l(cstring, orig, newsize, locale); */
+	_locale_t locale = _create_locale(LC_ALL, "zh-CN");
+	_wcstombs_l(cstring, orig, newsize, locale);
+	delete (buf);
 	return cstring;
 #endif
 }

@@ -18,7 +18,7 @@ namespace common
 	template <typename... Arg>
 	std::string string_format(const std::string &format, Arg... args);
 	wchar_t *to_wcstr(const char *orig);
-	char *to_cstr(const wchar_t *orig);
+	char *to_cstr(const wchar_t *orig, int size = -1);
 	std::string to_string(const wchar_t *orig);
 	std::wstring full_path(std::wstring path);
 	//result: 0 does not exist;1 directory;2 file.
