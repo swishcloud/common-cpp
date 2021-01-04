@@ -28,6 +28,7 @@ namespace common
 	int find_files(std::string path, std::vector<std::string> &files);
 	char *strncpy(const char *source);
 	std::string GetLastErrorMsg(LPTSTR lpszFunction);
+	void throw_exception(std::string s);
 } // namespace common
 
 template <typename... Arg>

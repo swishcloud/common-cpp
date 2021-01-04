@@ -206,3 +206,7 @@ std::string common::GetLastErrorMsg(LPTSTR lpszFunction)
 	LocalFree(lpDisplayBuf);
 	return r;
 }
+void common::throw_exception(std::string s)
+{
+	throw common_exception("this function not supported on the current platform.");
+}
