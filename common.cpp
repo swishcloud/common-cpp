@@ -76,7 +76,6 @@ std::wstring common::full_path(std::wstring path)
 
 int common::file_exist(const char *filename)
 {
-#ifdef __linux__
 	if (!std::filesystem::exists(filename))
 	{
 		return 0;
@@ -89,18 +88,6 @@ int common::file_exist(const char *filename)
 	{
 		return 2;
 	}
-#else
-	WIN32_FILE_ATTRIBUTE_DATA info{};
-	if (GetFileAttributesExA(filename, GET_FILEEX_INFO_LEVELS(), &info) == 0)
-	{
-		return 0;
-	}
-	if (info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-	{
-		return 1;
-	}
-	return 2;
-#endif
 }
 void common::run_file(const wchar_t *filename)
 {
