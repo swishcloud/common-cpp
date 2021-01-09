@@ -1,6 +1,7 @@
 #include <monitor.h>
 #include <assert.h>
 #include <common.h>
+#include <Windows.h>
 HANDLE h;
 const int buffer_len = 64 * 1024;
 //FILE_NOTIFY_INFORMATION lpBuffer[buffer_len];
@@ -70,13 +71,16 @@ void common::monitor::win_monitor::ReadDirectoryChangesW()
 }
 common::monitor ::win_monitor::win_monitor(onchange onchange, void *obj, std::string path_to_watch)
 {
-    this->onchange_cb = onchange;
-    this->obj = obj;
     this->path_to_watch = path_to_watch;
     overlapped.hEvent = this;
 }
-void common::monitor::win_monitor::watch()
+// void common::monitor::watch(std::string path_to_watch)
+// {
+// }
+void common::monitor::win_monitor::read_async(onchange onchange, void *obj)
 {
+    this->onchange_cb = onchange;
+    this->obj = obj;
     //get file handle
     h = CreateFileA(path_to_watch.c_str(), FILE_LIST_DIRECTORY, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED | FILE_FLAG_NO_BUFFERING, NULL);
     if (h == INVALID_HANDLE_VALUE)

@@ -25,10 +25,23 @@ namespace common
 	int file_exist(const char *filename);
 	void run_file(const wchar_t *filename);
 	int find_files(std::wstring path, std::vector<std::wstring> &files);
-	int find_files(std::string path, std::vector<std::string> &files);
+	///filter: 0 query all,1 query files,2 query directories
+	void find_files(std::string path, std::vector<std::string> &files, bool recursive = false, int filter = 0);
 	char *strncpy(const char *source);
-	std::string GetLastErrorMsg(LPTSTR lpszFunction);
+	std::string GetLastErrorMsg(const char *lpszFunction);
 	void throw_exception(std::string s);
+	class exception : public std::exception
+	{
+	public:
+		std::string err;
+		exception(std::string err) : err{err}
+		{
+		}
+		const char *what() const noexcept override
+		{
+			return err.c_str();
+		}
+	};
 } // namespace common
 
 template <typename... Arg>

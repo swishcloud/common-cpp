@@ -123,13 +123,12 @@ int common::find_files(std::wstring path, std::vector<std::wstring> &files)
 	}
 #endif
 }
-int common::find_files(std::string path, std::vector<std::string> &files)
+void common::find_files(std::string path, std::vector<std::string> &files, bool recursive, int filter)
 {
 	DIR *dir;
 	struct dirent *ent;
 	if ((dir = opendir(path.c_str())) != NULL)
 	{
-		int count = 0;
 		while ((ent = readdir(dir)) != NULL)
 		{
 			char *file_name = ent->d_name;
@@ -137,16 +136,30 @@ int common::find_files(std::string path, std::vector<std::string> &files)
 			{
 				continue;
 			}
-			files.push_back(std::string(file_name));
-			++count;
+			auto full_path = std::filesystem::path(path).append(file_name).string();
+			if (ent->d_type == DT_DIR)
+			{
+				if (filter != 1)
+				{
+					files.push_back(full_path);
+				}
+				if (recursive)
+					find_files(full_path, files, recursive, filter);
+			}
+			else
+			{
+				if (filter != 2)
+				{
+					files.push_back(full_path);
+				}
+			}
 		}
 		free(ent);
 		closedir(dir);
-		return count;
 	}
 	else
 	{
-		return -1;
+		throw exception(common::string_format("opendir failed:%s", path.c_str()));
 	}
 }
 char *common::strncpy(const char *source)
@@ -161,11 +174,11 @@ char *common::strncpy(const char *source)
 	return cpy;
 }
 
-std::string common::GetLastErrorMsg(LPTSTR lpszFunction)
+std::string common::GetLastErrorMsg(const char *lpszFunction)
 {
 #ifdef __linux__
 	throw PLATFORM_NOT_SUPPORTED();
-#endif
+#else
 	// Retrieve the system error message for the last-error code
 
 	LPVOID lpMsgBuf;
@@ -192,8 +205,9 @@ std::string common::GetLastErrorMsg(LPTSTR lpszFunction)
 	LocalFree(lpMsgBuf);
 	LocalFree(lpDisplayBuf);
 	return r;
+#endif
 }
 void common::throw_exception(std::string s)
 {
-	throw common_exception("this function not supported on the current platform.");
+	throw common_exception(s);
 }
