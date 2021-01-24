@@ -27,7 +27,7 @@ namespace common
 	int find_files(std::wstring path, std::vector<std::wstring> &files);
 	///filter: 0 query all,1 query files,2 query directories
 	void find_files(std::string path, std::vector<std::string> &files, bool recursive = false, int filter = 0);
-	char *strncpy(const char *source);
+	char *strcpy(const char *source);
 	std::string GetLastErrorMsg(const char *lpszFunction);
 	void throw_exception(std::string s);
 	class exception : public std::exception

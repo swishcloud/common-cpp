@@ -50,6 +50,7 @@ namespace common
             std::string path_to_watch;
             void *obj;
             linux_monitor();
+            ~linux_monitor();
             void watch(std::string path_to_watch) override;
             void read_async(onchange onchange, void *obj) override;
         };

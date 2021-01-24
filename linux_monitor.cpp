@@ -9,6 +9,7 @@ namespace common
     namespace monitor
     {
         int fd;
+        std::thread *first;
         std::unordered_map<int, std::string> wd_map;
         linux_monitor::linux_monitor()
         {
@@ -16,6 +17,10 @@ namespace common
             {
                 common::throw_exception("inotify_init failed");
             }
+        }
+        linux_monitor::~linux_monitor()
+        {
+            delete first;
         }
         void linux_monitor::watch(std::string path_to_watch)
         {
@@ -96,7 +101,7 @@ namespace common
         }
         void linux_monitor::read_async(onchange onchange, void *obj)
         {
-            std::thread *first = new std::thread(&_read_async, onchange, obj, this);
+            first = new std::thread(&_read_async, onchange, obj, this);
         }
     } // namespace monitor
 } // namespace common

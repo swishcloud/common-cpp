@@ -162,7 +162,7 @@ void common::find_files(std::string path, std::vector<std::string> &files, bool 
 		throw exception(common::string_format("opendir failed:%s", path.c_str()));
 	}
 }
-char *common::strncpy(const char *source)
+char *common::strcpy(const char *source)
 {
 	if (!source)
 	{
