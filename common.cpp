@@ -2,8 +2,14 @@
 #include "common.h"
 #include <iostream>
 #include <memory>
-#include <dirent.h>
 #include <assert.h>
+
+#ifdef __linux__
+#include <dirent.h>
+#else
+#include <dirent-win.h>
+#endif
+
 class common_exception : public std::exception
 {
 public:

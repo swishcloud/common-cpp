@@ -31,9 +31,9 @@ namespace common
 
         class win_monitor : public MONITOR
         {
-            MONITOR::onchange onchange_cb;
 
         public:
+            MONITOR::onchange onchange_cb;
             std::string path_to_watch;
             void *obj;
             win_monitor(std::string path_to_watch);

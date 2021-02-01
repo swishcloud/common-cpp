@@ -69,14 +69,14 @@ void common::monitor::win_monitor::ReadDirectoryChangesW()
         common::throw_exception(common::GetLastErrorMsg("ReadDirectoryChangesW"));
     }
 }
-common::monitor ::win_monitor::win_monitor(onchange onchange, void *obj, std::string path_to_watch)
+common::monitor::win_monitor::win_monitor(std::string path_to_watch)
 {
     this->path_to_watch = path_to_watch;
     overlapped.hEvent = this;
 }
-// void common::monitor::watch(std::string path_to_watch)
-// {
-// }
+void common::monitor::win_monitor::watch(std::string path_to_watch)
+{
+}
 void common::monitor::win_monitor::read_async(onchange onchange, void *obj)
 {
     this->onchange_cb = onchange;
