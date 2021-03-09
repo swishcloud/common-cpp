@@ -43,7 +43,6 @@ namespace common
 
         static void _read_async(common::monitor::MONITOR::onchange onchange, void *obj, linux_monitor *linux_monitor)
         {
-            const int NAME_MAX = 255;
             const int BUF_LEN = (sizeof(inotify_event) + NAME_MAX + 1) * 1000;
             char buffer[BUF_LEN];
             while (1)

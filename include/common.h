@@ -7,6 +7,10 @@
 #include <memory>
 #include <cstring>
 #include <filesystem>
+#include <future>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #ifdef __linux__
 #else
 #include <locale.h>
@@ -27,7 +31,7 @@ namespace common
 	int find_files(std::wstring path, std::vector<std::wstring> &files);
 	///filter: 0 query all,1 query files,2 query directories
 	void find_files(std::string path, std::vector<std::string> &files, bool recursive = false, int filter = 0);
-	char *strcpy(const char *source);
+	char *strcpy(const char *source, int len = -1);
 	std::string GetLastErrorMsg(const char *lpszFunction);
 	void throw_exception(std::string s);
 	class exception : public std::exception
@@ -42,6 +46,10 @@ namespace common
 			return err.c_str();
 		}
 	};
+	void print_debug(std::string str);
+	void print_info(std::string str);
+	void pause();
+	std::string uuid();
 } // namespace common
 
 template <typename... Arg>

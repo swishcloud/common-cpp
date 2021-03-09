@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <assert.h>
+#include <mutex>
 
 #ifdef __linux__
 #include <dirent.h>
@@ -168,15 +169,19 @@ void common::find_files(std::string path, std::vector<std::string> &files, bool 
 		throw exception(common::string_format("opendir failed:%s", path.c_str()));
 	}
 }
-char *common::strcpy(const char *source)
+char *common::strcpy(const char *source, int len)
 {
 	if (!source)
 	{
 		return NULL;
 	}
-	int size = strlen(source) + 1;
-	char *const cpy = new char[size];
-	::strncpy(cpy, source, size);
+	if (len == -1)
+	{
+		len = strlen(source);
+	}
+	char *const cpy = new char[len + 1];
+	::strncpy(cpy, source, len);
+	cpy[len] = 0;
 	return cpy;
 }
 
@@ -216,4 +221,28 @@ std::string common::GetLastErrorMsg(const char *lpszFunction)
 void common::throw_exception(std::string s)
 {
 	throw common_exception(s);
+}
+
+std::mutex print_mtx;
+void common::print_debug(std::string str)
+{
+	std::lock_guard<std::mutex> guard(print_mtx);
+	auto level = "DEBUG";
+	std::cout << common::string_format("%s>%s", level, str.c_str()) << std::endl;
+}
+void common::print_info(std::string str)
+{
+	std::lock_guard<std::mutex> guard(print_mtx);
+	auto level = "INFO";
+	std::cout << common::string_format("%s>%s", level, str.c_str()) << std::endl;
+}
+void common::pause()
+{
+	std::promise<void> promise;
+	std::future<void> future = promise.get_future();
+	future.get();
+}
+std::string common::uuid()
+{
+	return boost::uuids::to_string(boost::uuids::random_generator()());
 }
