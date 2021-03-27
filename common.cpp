@@ -4,7 +4,7 @@
 #include <memory>
 #include <assert.h>
 #include <mutex>
-
+#include <regex>
 #ifdef __linux__
 #include <dirent.h>
 #else
@@ -252,4 +252,48 @@ size_t common::to_size_t(std::string str)
 	size_t result;
 	sstream >> result;
 	return result;
+}
+std::string common::get_relative_path(std::string parent, std::string child)
+{
+	if (strncmp(parent.c_str(), child.c_str(), strlen(parent.c_str())) != 0)
+	{
+		throw common::exception("the two strings is not parent-child relationship.");
+	}
+	auto relative = child.c_str() + strlen(parent.c_str());
+	if (relative[1] == '/' || relative[1] == '\\')
+	{
+		relative = relative + 1;
+	}
+	return relative;
+}
+std::string common::get_file_name(std::string path)
+{
+	std::regex re("[^/\\\\]+$");
+	std::cmatch m;
+	if (std::regex_search(path.c_str(), m, re))
+		return m[0];
+	else
+		return "";
+}
+void common::makedir(std::string path)
+{
+	std::error_code ec;
+
+	if (std::filesystem::exists(path) && !std::filesystem::is_directory(path))
+	{
+		std::filesystem::remove_all(path, ec);
+		if (ec)
+		{
+			throw common::exception(ec.message());
+		}
+	}
+
+	if (!std::filesystem::exists(path))
+	{
+		std::filesystem::create_directory(path, ec);
+		if (ec)
+		{
+			throw common::exception(ec.message());
+		}
+	}
 }

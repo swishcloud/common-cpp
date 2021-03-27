@@ -51,6 +51,9 @@ namespace common
 	void pause();
 	std::string uuid();
 	size_t to_size_t(std::string str);
+	std::string get_relative_path(std::string parent, std::string child);
+	std::string get_file_name(std::string path);
+	void makedir(std::string path);
 } // namespace common
 
 template <typename... Arg>
