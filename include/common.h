@@ -50,6 +50,7 @@ namespace common
 	void print_info(std::string str);
 	void pause();
 	std::string uuid();
+	size_t to_size_t(std::string str);
 } // namespace common
 
 template <typename... Arg>

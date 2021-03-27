@@ -246,3 +246,10 @@ std::string common::uuid()
 {
 	return boost::uuids::to_string(boost::uuids::random_generator()());
 }
+size_t common::to_size_t(std::string str)
+{
+	std::stringstream sstream(str);
+	size_t result;
+	sstream >> result;
+	return result;
+}
