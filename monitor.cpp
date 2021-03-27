@@ -9,7 +9,7 @@ char lpBuffer[buffer_len];
 LPDWORD lpBytesReturned;
 OVERLAPPED overlapped;
 
-void LpoverlappedCompletionRoutine(
+void WINAPI LpoverlappedCompletionRoutine(
     DWORD dwErrorCode,
     DWORD dwNumberOfBytesTransfered,
     LPOVERLAPPED lpOverlapped)
