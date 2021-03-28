@@ -54,6 +54,19 @@ namespace common
 	std::string get_relative_path(std::string parent, std::string child);
 	std::string get_file_name(std::string path);
 	void makedir(std::string path);
+	std::string url_encode(const char *str);
+	struct error
+	{
+	private:
+		std::string err;
+
+	public:
+		error();
+		error(const char *error);
+		error(std::string error);
+		operator bool();
+		const char *message();
+	};
 } // namespace common
 
 template <typename... Arg>

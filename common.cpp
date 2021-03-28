@@ -297,3 +297,39 @@ void common::makedir(std::string path)
 		}
 	}
 }
+std::string common::url_encode(const char *str)
+{
+	int len = strlen(str);
+	std::string buf{};
+	for (int i = 0; i < len; i++)
+	{
+		unsigned char c = str[i];
+		if (isalnum(c) || c == '-' || c == '.' || c == '_' || c == '~')
+		{
+			buf.push_back(c);
+		}
+		else
+		{
+			buf.append(common::string_format("%%%x", c));
+		}
+	}
+	return buf;
+}
+common::error::error()
+{
+}
+common::error::error(const char *e) : error{e ? e : std::string{}}
+{
+}
+common::error::error(std::string e)
+{
+	this->err = e;
+}
+common::error::operator bool()
+{
+	return !this->err.empty();
+}
+const char *common::error::message()
+{
+	return this->err.empty() ? "SUCCESS" : err.c_str();
+}
