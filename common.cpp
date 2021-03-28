@@ -4,6 +4,7 @@
 #include <memory>
 #include <assert.h>
 #include <mutex>
+#include <fstream>
 #include <regex>
 #ifdef __linux__
 #include <dirent.h>
@@ -314,6 +315,121 @@ std::string common::url_encode(const char *str)
 		}
 	}
 	return buf;
+}
+char *common::exec_cmd(const char *command, char **err)
+{
+	char *err_str = NULL;
+	const int buffer_size = 128;
+	char buffer[buffer_size];
+	char *result = new char{};
+	// Open pipe to file
+	FILE *pipe;
+	print_debug(command);
+#ifdef __linux__
+	pipe = popen(command, "r");
+#else
+	pipe = _popen(command, "r");
+#endif
+	if (!pipe)
+	{
+		err_str = common::strcpy("popen failed!");
+		*err = err_str;
+		delete result;
+		return NULL;
+	}
+	while (fgets(buffer, buffer_size, pipe) != NULL)
+	{
+		size_t newsize = strlen(result) + strlen(buffer) + 1;
+		char *temp = new char[newsize];
+		char *temp2 = temp + strlen(result);
+		memcpy(temp, result, strlen(result));
+		memcpy(temp2, buffer, strlen(buffer));
+		temp[newsize - 1] = '\0';
+		delete (result);
+		result = temp;
+	}
+#ifdef __linux__
+	pclose(pipe);
+#else
+	_pclose(pipe);
+#endif
+	delete (err_str);
+	return result;
+} // namespace filesync
+
+std::string common::file_md5(const char *filename)
+{
+	if (!std::filesystem::exists(filename))
+	{
+		throw exception("failed to calculate md5 due to the file does not exist.");
+	}
+	if (std::filesystem::file_size(filename) == 0)
+		return "d41d8cd98f00b204e9800998ecf8427e";
+	char *err{};
+	std::string cmd;
+	if (linux_os)
+		cmd = common::string_format("md5sum \"%s\"", filename);
+	else
+		cmd = common::string_format("certutil -hashfile \"%s\" MD5", filename);
+	char *cmd_resut = exec_cmd(cmd.c_str(), &err);
+	std::cmatch m{};
+	std::regex reg;
+	if (linux_os)
+	{
+		reg = "^([a-z\\d]{32})";
+	}
+	else
+	{
+		reg = "\\n([a-z\\d]{32})";
+	};
+	if (!std::regex_search(cmd_resut, m, reg))
+	{
+		auto e_str = common::string_format("getting uuid failed.%s", cmd_resut);
+		delete[](err);
+		delete[](cmd_resut);
+		throw exception(e_str);
+	}
+	std::string md5 = m[1].str();
+	delete[](err);
+	delete[](cmd_resut);
+	return md5;
+}
+
+void common::movebycmd(std::string source, std::string destination)
+{
+	char *err{};
+	auto cmd = common::string_format("mv \"%s\" \"%s\" -f", source.c_str(), destination.c_str());
+	char *cmd_resut = exec_cmd(cmd.c_str(), &err);
+	std::unique_ptr<char[]> u{err};
+	if (err != NULL)
+	{
+		throw common::exception(err);
+	}
+}
+
+size_t common::file_size(std::string path)
+{
+	std::ifstream fs{path, std::ios_base::binary | std::ios_base::ate};
+	return fs.tellg();
+}
+bool common::compare_md5(const char *a, const char *b)
+{
+	if (a == NULL)
+	{
+		a = "";
+	}
+	if (b == NULL)
+	{
+		b = "";
+	}
+	return strcmp(trim_trailing_space(a).c_str(), trim_trailing_space(b).c_str()) == 0;
+}
+std::string common::trim_trailing_space(std::string str)
+{
+	std::smatch m{};
+	std::regex reg{"([^ ]*) *$"};
+	assert(std::regex_search(str, m, reg));
+	return m[1].str();
 }
 common::error::error()
 {

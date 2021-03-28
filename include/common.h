@@ -17,6 +17,13 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
+
+#ifdef __linux__
+#define linux_os true
+#else
+#define linux_os false
+#endif
+
 namespace common
 {
 	template <typename... Arg>
@@ -55,6 +62,12 @@ namespace common
 	std::string get_file_name(std::string path);
 	void makedir(std::string path);
 	std::string url_encode(const char *str);
+	char *exec_cmd(const char *command, char **err);
+	std::string file_md5(const char *filename);
+	void movebycmd(std::string source, std::string destination);
+	size_t file_size(std::string path);
+	bool compare_md5(const char *a, const char *b);
+	std::string trim_trailing_space(std::string str);
 	struct error
 	{
 	private:
