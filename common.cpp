@@ -261,7 +261,7 @@ std::string common::get_relative_path(std::string parent, std::string child)
 		throw common::exception("the two strings is not parent-child relationship.");
 	}
 	auto relative = child.c_str() + strlen(parent.c_str());
-	if (relative[1] == '/' || relative[1] == '\\')
+	if (relative[0] == '/' || relative[0] == '\\')
 	{
 		relative = relative + 1;
 	}
