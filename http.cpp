@@ -158,8 +158,7 @@ namespace common
         this->resp_text = "";
         ioc.restart();
         ioc.run();
-        /*delete stream.get();
-        stream.release();*/
+        delete stream.release();
     }
     void http_client::handshake()
     {
