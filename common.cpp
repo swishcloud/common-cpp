@@ -291,7 +291,7 @@ void common::makedir(std::string path)
 
 	if (!std::filesystem::exists(path))
 	{
-		std::filesystem::create_directory(path, ec);
+		std::filesystem::create_directories(path, ec);
 		if (ec)
 		{
 			throw common::exception(ec.message());
@@ -397,8 +397,14 @@ std::string common::file_md5(const char *filename)
 
 void common::movebycmd(std::string source, std::string destination)
 {
+	formalize_path(source);
+	formalize_path(destination);
 	char *err{};
-	auto cmd = common::string_format("mv \"%s\" \"%s\" -f", source.c_str(), destination.c_str());
+	std::string cmd;
+	if (linux_os)
+		cmd = common::string_format("mv \"%s\" \"%s\" -f", source.c_str(), destination.c_str());
+	else
+		cmd = common::string_format("move /Y \"%s\" \"%s\"", source.c_str(), destination.c_str());
 	char *cmd_resut = exec_cmd(cmd.c_str(), &err);
 	std::unique_ptr<char[]> u{err};
 	if (err != NULL)
@@ -448,4 +454,20 @@ common::error::operator bool()
 const char *common::error::message()
 {
 	return this->err.empty() ? "SUCCESS" : err.c_str();
+}
+void common::formalize_path(std::string &path)
+{
+	char char_to_replace;
+	char new_char;
+	if (linux_os)
+	{
+		char_to_replace = '\\';
+		new_char = '/';
+	}
+	else
+	{
+		char_to_replace = '/';
+		new_char = '\\';
+	}
+	std::replace(path.begin(), path.end(), char_to_replace, new_char);
 }

@@ -81,6 +81,7 @@ namespace common
 		operator bool();
 		const char *message();
 	};
+	void formalize_path(std::string &path);
 } // namespace common
 
 template <typename... Arg>
