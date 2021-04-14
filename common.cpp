@@ -405,7 +405,7 @@ void common::movebycmd(std::string source, std::string destination)
 		cmd = common::string_format("mv \"%s\" \"%s\" -f", source.c_str(), destination.c_str());
 	else
 		cmd = common::string_format("move /Y \"%s\" \"%s\"", source.c_str(), destination.c_str());
-	std::string cmd_result = exec_cmd(cmd.c_str(), &err);
+	std::string cmd_result = std::unique_ptr<char[]>{exec_cmd(cmd.c_str(), &err)}.get();
 	std::unique_ptr<char[]> u{err};
 	if (err != NULL)
 	{
