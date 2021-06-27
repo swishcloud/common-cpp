@@ -411,7 +411,7 @@ void common::movebycmd(std::string source, std::string destination)
 	{
 		throw common::exception(err);
 	}
-	if ("        1 file(s) moved.\n" != cmd_result)
+	if ("        1 file(s) moved.\n" != cmd_result && "" != cmd_result)
 	{
 		throw common::exception("ERROR:" + cmd_result);
 	}
