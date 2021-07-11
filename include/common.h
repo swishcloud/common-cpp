@@ -82,6 +82,7 @@ namespace common
 		const char *message();
 	};
 	void formalize_path(std::string &path);
+	std::string trim_right(std::string str, std::string cutset);
 } // namespace common
 
 template <typename... Arg>

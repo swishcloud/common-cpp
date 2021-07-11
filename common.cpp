@@ -475,3 +475,22 @@ void common::formalize_path(std::string &path)
 	}
 	std::replace(path.begin(), path.end(), char_to_replace, new_char);
 }
+std::string common::trim_right(std::string str, std::string cutset)
+{
+	while (1)
+	{
+		int n = str.size();
+		for (char c : cutset)
+		{
+			if (str[str.size() - 1] == c)
+			{
+				str = str.substr(0, str.size() - 1);
+			}
+		}
+		if (n == str.size())
+		{
+			break;
+		}
+	}
+	return str;
+}
