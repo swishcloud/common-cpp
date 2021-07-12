@@ -19,9 +19,9 @@ void WINAPI LpoverlappedCompletionRoutine(
     auto info = (FILE_NOTIFY_INFORMATION *)lpBuffer;
     while (1)
     {
-        auto filename = std::wstring(info->FileName, info->FileNameLength/2);
+        auto filename = std::wstring(info->FileName, info->FileNameLength / 2);
         auto c = new common::monitor::change();
-        c->path = std::filesystem::path(monitor->path_to_watch).append(filename).string();
+        c->path = std::filesystem::path(monitor->path_to_watch).string();
         monitor->onchange_cb(c, monitor->obj);
         switch (info->Action)
         {
