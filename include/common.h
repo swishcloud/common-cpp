@@ -15,7 +15,6 @@
 #ifdef __linux__
 #else
 #include <locale.h>
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
 
