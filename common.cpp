@@ -6,6 +6,7 @@
 #include <mutex>
 #include <fstream>
 #include <regex>
+#include <pq
 #ifdef __linux__
 #include <dirent.h>
 #else
@@ -324,7 +325,6 @@ char *common::exec_cmd(const char *command, char **err)
 	char *result = new char{};
 	// Open pipe to file
 	FILE *pipe;
-	print_debug(command);
 #ifdef __linux__
 	pipe = popen(command, "r");
 #else
