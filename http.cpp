@@ -136,49 +136,65 @@ namespace common
     }
     void http_client::connect()
     {
-        tcp::resolver resolve(ioc);
-        ssl::context ctx(ssl::context::tlsv12_client);
-        //load_root_certificates(ctx);
-        ctx.set_verify_mode(ssl::verify_none);
-        auto const results = resolve.resolve(host, port);
-        stream.reset(new beast::ssl_stream<beast::tcp_stream>(ioc, ctx));
-        beast::get_lowest_layer(*stream.get()).expires_after(std::chrono::seconds(TIMEOUT));
-        beast::get_lowest_layer(*stream.get()).async_connect(results, [this](const boost::system::error_code &error, const tcp::endpoint & /*endpoint*/) {
-            if (!error)
-            {
-                //filesync::print_debug("async connection succeed.");
-                handshake();
-            }
-            else
-            {
-                this->error = common::string_format("async connect failed with error:%s", error.message().c_str());
-            }
-        });
         this->error = "";
         this->resp_text = "";
+        resolve();
         ioc.restart();
         ioc.run();
         delete stream.release();
     }
+    void http_client::resolve()
+    {
+        std::shared_ptr<tcp::resolver> resolver{new tcp::resolver{ioc}};
+        resolver->async_resolve(host, port, [this, resolver](const boost::system::error_code &error, // Result of operation.
+                                                             tcp::resolver::results_type results     // Resolved endpoints as a range.
+                                            )
+                                {
+                                    if (error)
+                                    {
+                                        this->error = common::string_format("resolve host failed:%s", error.message().c_str());
+                                        return;
+                                    }
+                                    ssl::context ssl_context{ssl::context::tlsv12_client};
+                                    //load_root_certificates(ctx);
+                                    ssl_context.set_verify_mode(ssl::verify_none);
+                                    stream.reset(new beast::ssl_stream<beast::tcp_stream>(ioc, ssl_context));
+                                    beast::get_lowest_layer(*stream.get()).expires_after(std::chrono::seconds(TIMEOUT));
+                                    beast::get_lowest_layer(*stream.get()).async_connect(results, [this](const boost::system::error_code &error, const tcp::endpoint & /*endpoint*/)
+                                                                                         {
+                                                                                             if (!error)
+                                                                                             {
+                                                                                                 //filesync::print_debug("async connection succeed.");
+                                                                                                 handshake();
+                                                                                             }
+                                                                                             else
+                                                                                             {
+                                                                                                 this->error = common::string_format("async connect failed with error:%s", error.message().c_str());
+                                                                                             }
+                                                                                         });
+                                });
+    }
     void http_client::handshake()
     {
-        (*stream.get()).async_handshake(boost::asio::ssl::stream_base::client, [this](const boost::system::error_code &error) {
-            if (!error)
-            {
-                //filesync::print_debug("async handshake succeed.");
-                send_request();
-            }
-            else
-            {
-                this->error = common::string_format("async handshake failed with error:%s", error.message().c_str());
-            }
-        });
+        (*stream.get()).async_handshake(boost::asio::ssl::stream_base::client, [this](const boost::system::error_code &error)
+                                        {
+                                            if (!error)
+                                            {
+                                                //filesync::print_debug("async handshake succeed.");
+                                                send_request();
+                                            }
+                                            else
+                                            {
+                                                this->error = common::string_format("async handshake failed with error:%s", error.message().c_str());
+                                            }
+                                        });
     }
 
     void http_client::send_request()
     {
         boost_http::async_write(*stream.get(), this->req,
-                                [this](const boost::system::error_code &error, std::size_t length) {
+                                [this](const boost::system::error_code &error, std::size_t length)
+                                {
                                     if (!error)
                                     {
                                         //filesync::print_debug("async write succeed.");
@@ -197,17 +213,18 @@ namespace common
         boost_http::response<boost_http::dynamic_body> res;
         this->res = res;
         boost_http::async_read(*stream.get(), this->buffer, this->res, [this](boost::system::error_code const &error, // result of operation
-                                                                              std::size_t bytes_transferred) {
-            if (!error)
-            {
-                //filesync::print_debug("async read succeed.");
-                this->resp_text = beast::buffers_to_string(this->res.body().data());
-                //filesync::print_debug(common::string_format("HTTP RESPONSE:[%s]", this->resp_text.c_str()));
-            }
-            else
-            {
-                this->error = common::string_format("async read failed with error:%s", error.message().c_str());
-            }
-        });
+                                                                              std::size_t bytes_transferred)
+                               {
+                                   if (!error)
+                                   {
+                                       //filesync::print_debug("async read succeed.");
+                                       this->resp_text = beast::buffers_to_string(this->res.body().data());
+                                       //filesync::print_debug(common::string_format("HTTP RESPONSE:[%s]", this->resp_text.c_str()));
+                                   }
+                                   else
+                                   {
+                                       this->error = common::string_format("async read failed with error:%s", error.message().c_str());
+                                   }
+                               });
     }
 }; // namespace common

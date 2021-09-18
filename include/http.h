@@ -90,6 +90,7 @@ namespace common
         net::io_context ioc;
 
         void connect();
+        void resolve();
         void handshake();
 
         void send_request();

@@ -5,7 +5,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "COMMON")
 #set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 #set(Boost_DIR "/usr/local/lib/cmake/Boost-1.75.0/")
-set(CMAKE_PREFIX_PATH "/opt/openssl")
 #set(CMAKE_PREFIX_PATH "C:\\Program Files (x86)\\Boost\\lib\\cmake")
 #set(Boost_COMPILER mgw8)
 #specify output binary name
@@ -21,6 +20,7 @@ set(EXPORT_TARGET_NAME ${OUTPUT_NAME})
 find_package(OpenSSL REQUIRED)
 find_package(Boost REQUIRED COMPONENTS date_time )
 
+add_subdirectory(test)
 if (MSVC)
     # warning level 4 and all warnings as errors
     #add_compile_options(/W4 /WX)
@@ -37,8 +37,7 @@ add_library(${TARGET_NAME} STATIC common.cpp http.cpp monitor.cpp)
 endif()
 set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${OUTPUT_NAME}-$<CONFIG:Debug>)
 
-target_include_directories(${TARGET_NAME} PRIVATE include "${OPENSSL_INCLUDE_DIR}/include" "${Boost_INCLUDE_DIRS}")
-message(OPENSSL HEADER DIECTORY:${OPENSSL_INCLUDE_DIR}/include/openssl)
+target_include_directories(${TARGET_NAME} PRIVATE include "${OPENSSL_INCLUDE_DIR}" "${Boost_INCLUDE_DIRS}")
 install(DIRECTORY include/ TYPE INCLUDE  FILES_MATCHING REGEX  "[^/]*.h$")
 install(TARGETS ${TARGET_NAME} EXPORT ${EXPORT_TARGET_NAME}
   LIBRARY DESTINATION lib RENAME XX

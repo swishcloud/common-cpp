@@ -1,6 +1,9 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -9,13 +12,9 @@
 #include <filesystem>
 #include <future>
 #include <sstream>
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/uuid/uuid_io.hpp>
 #ifdef __linux__
 #else
 #include <locale.h>
-#include <windows.h>
 #endif
 
 #ifdef __linux__

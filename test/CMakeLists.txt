@@ -1,0 +1,7 @@
+find_package(Boost REQUIRED COMPONENTS locale)
+add_compile_definitions(WIN32_LEAN_AND_MEAN)
+set(TEST_TARGET_NAME "COMMON-TEST")
+add_executable(${TEST_TARGET_NAME} common_test.cpp)
+target_link_libraries(${TEST_TARGET_NAME} PRIVATE ${TARGET_NAME})
+target_include_directories(${TEST_TARGET_NAME} PRIVATE "${OPENSSL_INCLUDE_DIR}" "${Boost_INCLUDE_DIRS}" ..)
+target_link_libraries(${TEST_TARGET_NAME} PRIVATE Boost::date_time Boost::locale OpenSSL::SSL OpenSSL::Crypto)
