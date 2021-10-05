@@ -318,6 +318,7 @@ std::string common::url_encode(const char *str)
 }
 char *common::exec_cmd(const char *command, char **err)
 {
+	auto cmd = std::string(command) + " 2>&1";
 	char *err_str = NULL;
 	const int buffer_size = 128;
 	char buffer[buffer_size];
@@ -325,9 +326,9 @@ char *common::exec_cmd(const char *command, char **err)
 	// Open pipe to file
 	FILE *pipe;
 #ifdef __linux__
-	pipe = popen(command, "r");
+	pipe = popen(cmd.c_str(), "r");
 #else
-	pipe = _popen(command, "r");
+	pipe = _popen(cmd.c_str(), "r");
 #endif
 	if (!pipe)
 	{
