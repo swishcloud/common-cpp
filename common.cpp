@@ -368,7 +368,7 @@ std::string common::file_md5(const char *filename)
 	char *err{};
 	std::string cmd;
 	if (linux_os)
-		cmd = common::string_format("md5sum \"%s\"", filename);
+		cmd = common::string_format("md5sum '%s'", filename);
 	else
 		cmd = common::string_format("certutil -hashfile \"%s\" MD5", filename);
 	char *cmd_resut = exec_cmd(cmd.c_str(), &err);
@@ -402,7 +402,7 @@ void common::movebycmd(std::string source, std::string destination)
 	char *err{};
 	std::string cmd;
 	if (linux_os)
-		cmd = common::string_format("mv \"%s\" \"%s\" -f", source.c_str(), destination.c_str());
+		cmd = common::string_format("mv '%s' '%s' -f", source.c_str(), destination.c_str());
 	else
 		cmd = common::string_format("move /Y \"%s\" \"%s\"", source.c_str(), destination.c_str());
 	std::string cmd_result = std::unique_ptr<char[]>{exec_cmd(cmd.c_str(), &err)}.get();
