@@ -84,6 +84,9 @@ std::wstring common::full_path(std::wstring path)
 
 int common::file_exist(const char *filename)
 {
+#ifdef __aarch64__
+	throw PLATFORM_NOT_SUPPORTED();
+#endif
 	if (!std::filesystem::exists(filename))
 	{
 		return 0;
@@ -133,6 +136,9 @@ int common::find_files(std::wstring path, std::vector<std::wstring> &files)
 }
 void common::find_files(std::string path, std::vector<std::string> &files, bool recursive, int filter)
 {
+#ifdef __aarch64__
+	throw PLATFORM_NOT_SUPPORTED();
+#endif
 	DIR *dir;
 	struct dirent *ent;
 	if ((dir = opendir(path.c_str())) != NULL)
@@ -278,6 +284,9 @@ std::string common::get_file_name(std::string path)
 }
 void common::makedir(std::string path)
 {
+#ifdef __aarch64__
+	throw PLATFORM_NOT_SUPPORTED();
+#endif
 	std::error_code ec;
 
 	if (std::filesystem::exists(path) && !std::filesystem::is_directory(path))
@@ -359,6 +368,9 @@ char *common::exec_cmd(const char *command, char **err)
 
 std::string common::file_md5(const char *filename)
 {
+#ifdef __aarch64__
+	throw PLATFORM_NOT_SUPPORTED();
+#endif
 	if (!std::filesystem::exists(filename))
 	{
 		throw exception("failed to calculate md5 due to the file does not exist.");
