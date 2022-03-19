@@ -46,7 +46,7 @@ endif ()
 set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${OUTPUT_NAME}-$<CONFIG:Debug>)
 
 target_include_directories(${TARGET_NAME} PRIVATE include "${OPENSSL_INCLUDE_DIR}" "${Boost_INCLUDE_DIRS}")
-#target_link_libraries(${TARGET_NAME} OpenSSL::Crypto OpenSSL::SSL)
+target_link_libraries(${TARGET_NAME} OpenSSL::Crypto OpenSSL::SSL)
 install(DIRECTORY include/ DESTINATION include FILES_MATCHING REGEX "[^/]*.h$")
 install(TARGETS ${TARGET_NAME} EXPORT ${EXPORT_TARGET_NAME}
         LIBRARY DESTINATION lib RENAME XX
