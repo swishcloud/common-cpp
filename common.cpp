@@ -6,6 +6,7 @@
 #include <mutex>
 #include <fstream>
 #include <regex>
+#include <sys/stat.h>
 #ifdef __linux__
 #include <dirent.h>
 #else
@@ -82,30 +83,21 @@ std::wstring common::full_path(std::wstring path)
 #endif
 }
 
-int common::file_exist(const char *filename)
+bool common::file_exist(const char *filename)
 {
-#ifdef __aarch64__
-	throw PLATFORM_NOT_SUPPORTED();
-#endif
-	if (!std::filesystem::exists(filename))
-	{
-		return 0;
-	}
-	else if (std::filesystem::is_directory(filename))
-	{
+	struct stat buffer;
+	int exist = stat(filename, &buffer);
+	if (exist == 0)
 		return 1;
-	}
 	else
-	{
-		return 2;
-	}
+		return 0;
 }
 void common::run_file(const wchar_t *filename)
 {
 #ifdef __linux__
 	throw PLATFORM_NOT_SUPPORTED();
 #else
-	throw PLATFORM_NOT_SUPPORTED(); //ShellExecuteW(GetForegroundWindow(), L"open", filename, NULL, NULL, SW_SHOWNORMAL);
+	throw PLATFORM_NOT_SUPPORTED(); // ShellExecuteW(GetForegroundWindow(), L"open", filename, NULL, NULL, SW_SHOWNORMAL);
 #endif
 }
 int common::find_files(std::wstring path, std::vector<std::wstring> &files)

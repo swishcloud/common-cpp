@@ -32,7 +32,7 @@ namespace common
 	std::string to_string(const wchar_t *orig);
 	std::wstring full_path(std::wstring path);
 	//result: 0 does not exist;1 directory;2 file.
-	int file_exist(const char *filename);
+	bool file_exist(const char *filename);
 	void run_file(const wchar_t *filename);
 	int find_files(std::wstring path, std::vector<std::wstring> &files);
 	///filter: 0 query all,1 query files,2 query directories

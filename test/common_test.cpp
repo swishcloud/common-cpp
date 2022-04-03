@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE COMMON_TEST
 #include <boost/test/included/unit_test.hpp>
-#include <../common-cpp/include/http.h>
+#include <http.h>
 BOOST_AUTO_TEST_CASE(movebycmd_test)
 {
     try
@@ -13,11 +13,11 @@ BOOST_AUTO_TEST_CASE(movebycmd_test)
     {
         common::print_info(common::string_format("it's expect to failed:%s", e.what()));
     }
-    BOOST_ASSERT(!std::filesystem::exists("test/common_test.cpp1"));
+    BOOST_ASSERT(!common::file_exist("test/common_test.cpp1"));
     common::movebycmd("test/common_test.cpp", "test/common_test.cpp${a}");
-    BOOST_ASSERT(std::filesystem::exists("test/common_test.cpp${a}"));
+    BOOST_ASSERT(common::file_exist("test/common_test.cpp${a}"));
     common::movebycmd("test/common_test.cpp${a}", "test/common_test.cpp");
-    BOOST_ASSERT(!std::filesystem::exists("test/common_test.cpp${a}"));
+    BOOST_ASSERT(!common::file_exist("test/common_test.cpp${a}"));
     common::print_info("PASS");
 }
 BOOST_AUTO_TEST_CASE(free_test_function)

@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.8)
 project(COMMON VERSION 0.1.0)
+enable_testing()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "COMMON")
@@ -20,13 +21,13 @@ set(EXPORT_TARGET_NAME ${OUTPUT_NAME})
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Android")
 set(OPENSSL_ROOT_DIR "/home/debian/Desktop/android-openssl/openssl-3.0.0/dest/")
-set(Boost_ROOT_DIR "/home/debian/Desktop/boost_1_75_0/dest/")
+set(Boost_ROOT_DIR "/home/flwwd/Desktop/boost/android/boost_1_75_0/dest/")
 list(APPEND CMAKE_FIND_ROOT_PATH "${OPENSSL_ROOT_DIR}" "${Boost_ROOT_DIR}")
 endif()
 find_package(OpenSSL REQUIRED)
 find_package(Boost REQUIRED)
 
-#add_subdirectory(test)
+add_subdirectory(test)
 if (MSVC)
     # warning level 4 and all warnings as errors
     #add_compile_options(/W4 /WX)
@@ -45,8 +46,9 @@ else ()
 endif ()
 set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${OUTPUT_NAME}-$<CONFIG:Debug>)
 
-target_include_directories(${TARGET_NAME} PRIVATE include "${OPENSSL_INCLUDE_DIR}" "${Boost_INCLUDE_DIRS}")
-target_link_libraries(${TARGET_NAME} OpenSSL::Crypto OpenSSL::SSL)
+target_include_directories(${TARGET_NAME} PUBLIC "${OPENSSL_INCLUDE_DIR}" "${Boost_INCLUDE_DIRS}"
+$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>)
+target_link_libraries(${TARGET_NAME} PUBLIC OpenSSL::Crypto OpenSSL::SSL)
 install(DIRECTORY include/ DESTINATION include FILES_MATCHING REGEX "[^/]*.h$")
 install(TARGETS ${TARGET_NAME} EXPORT ${EXPORT_TARGET_NAME}
         LIBRARY DESTINATION lib RENAME XX
