@@ -31,11 +31,11 @@ namespace common
 	char *to_cstr(const wchar_t *orig, int size = -1);
 	std::string to_string(const wchar_t *orig);
 	std::wstring full_path(std::wstring path);
-	//result: 0 does not exist;1 directory;2 file.
+	// result: 0 does not exist;1 directory;2 file.
 	bool file_exist(const char *filename);
 	void run_file(const wchar_t *filename);
 	int find_files(std::wstring path, std::vector<std::wstring> &files);
-	///filter: 0 query all,1 query files,2 query directories
+	/// filter: 0 query all,1 query files,2 query directories
 	void find_files(std::string path, std::vector<std::string> &files, bool recursive = false, int filter = 0);
 	char *strcpy(const char *source, int len = -1);
 	std::string GetLastErrorMsg(const char *lpszFunction);
@@ -60,6 +60,7 @@ namespace common
 	std::string get_relative_path(std::string parent, std::string child);
 	std::string get_file_name(std::string path);
 	void makedir(std::string path);
+	bool delete_file(std::string path);
 	std::string url_encode(const char *str);
 	char *exec_cmd(const char *command, char **err);
 	std::string file_md5(const char *filename);
@@ -67,6 +68,7 @@ namespace common
 	size_t file_size(std::string path);
 	bool compare_md5(const char *a, const char *b);
 	std::string trim_trailing_space(std::string str);
+	int random_num(int least, int greatest);
 	struct error
 	{
 	private:

@@ -299,6 +299,13 @@ void common::makedir(std::string path)
 		}
 	}
 }
+bool common::delete_file(std::string path)
+{
+	if (remove(path.c_str()) != 0)
+		return 0;
+	else
+		return 1;
+}
 std::string common::url_encode(const char *str)
 {
 	int len = strlen(str);
@@ -444,6 +451,16 @@ std::string common::trim_trailing_space(std::string str)
 	std::regex reg{"([^ ]*) *$"};
 	assert(std::regex_search(str, m, reg));
 	return m[1].str();
+}
+int common::random_num(int least, int greatest)
+{
+	srand(time(0));
+	int port = rand() % (++greatest);
+	while (port < least)
+	{
+		port = rand() % greatest;
+	}
+	return port;
 }
 common::error::error()
 {
