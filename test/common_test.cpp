@@ -1,6 +1,7 @@
 #define BOOST_TEST_MODULE COMMON_TEST
 #include <boost/test/included/unit_test.hpp>
 #include <http.h>
+#include <monitor.h>
 BOOST_AUTO_TEST_CASE(movebycmd_test)
 {
     try
@@ -39,4 +40,46 @@ BOOST_AUTO_TEST_CASE(free_test_function)
         }
 #endif
     }
+}
+void monitor_cb(common::monitor::change *c, void *obj)
+{
+    std::string changetype;
+    switch (c->ct)
+    {
+    case common::monitor::change_type::added:
+        changetype = "added";
+        break;
+    case common::monitor::change_type::removed:
+        changetype = "removed";
+        break;
+    case common::monitor::change_type::modified:
+        changetype = "modified";
+        break;
+    case common::monitor::change_type::renamed:
+        changetype = "renamed";
+        break;
+    case common::monitor::change_type::INMOVEDFROM:
+        changetype = "INMOVEDFROM";
+        break;
+    case common::monitor::change_type::INMOVEDTO:
+        changetype = "INMOVEDTO";
+        break;
+    default:
+        throw common::exception("unknown change type");
+    }
+    std::cout << "change type: " << changetype << ", change path : " << c->path << std::endl;
+}
+BOOST_AUTO_TEST_CASE(filemonitor_test)
+{
+    if (!std::filesystem::exists(".cache"))
+    {
+        if (!std::filesystem::create_directory(".cache"))
+        {
+            BOOST_FAIL("failed to create directory .cache");
+        }
+    }
+    common::monitor::MONITOR *monitor = new common::monitor::linux_monitor();
+    monitor->watch(".cache");
+    monitor->read_async(monitor_cb, NULL);
+    common::pause();
 }

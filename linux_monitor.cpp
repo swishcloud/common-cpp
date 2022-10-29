@@ -58,24 +58,31 @@ namespace common
                     inotify_event *event = (inotify_event *)(buffer + offset);
                     offset += event->len + sizeof(inotify_event);
                     std::string fullpath = std::filesystem::path(wd_map[event->wd]).append(event->name);
+                    auto c = new common::monitor::change();
+                    c->path = fullpath;
                     if (event->mask & IN_CREATE)
                     {
+                        c->ct = change_type::added;
                         std::cout << common::string_format("file IN_CREATE:%s", fullpath.c_str()) << std::endl;
                     }
                     else if (event->mask & IN_DELETE)
                     {
+                        c->ct = change_type::removed;
                         std::cout << common::string_format("file IN_DELETE:%s", fullpath.c_str()) << std::endl;
                     }
                     else if (event->mask & IN_MODIFY)
                     {
+                        c->ct = change_type::modified;
                         std::cout << common::string_format("file IN_MODIFY:%s", fullpath.c_str()) << std::endl;
                     }
                     else if (event->mask & IN_MOVED_FROM)
                     {
+                        c->ct = change_type::INMOVEDFROM;
                         std::cout << common::string_format("file IN_MOVED_FROM:%s", fullpath.c_str()) << std::endl;
                     }
                     else if (event->mask & IN_MOVED_TO)
                     {
+                        c->ct = change_type::INMOVEDTO;
                         std::cout << common::string_format("file IN_MOVED_TO:%s", fullpath.c_str()) << std::endl;
                     }
                     // else if (event->mask & IN_ISDIR)
@@ -84,16 +91,15 @@ namespace common
                     // }
                     else
                     {
+                        c->ct = change_type::unknown;
                         std::cout << common::string_format("file unknown event:%s", fullpath.c_str()) << std::endl;
-                        //common::throw_exception("unknown event");
+                        // common::throw_exception("unknown event");
                     }
 
                     if (std::filesystem::is_directory(fullpath))
                     {
                         linux_monitor->watch(fullpath);
                     }
-                    auto c = new common::monitor::change();
-                    c->path = fullpath;
                     onchange(c, obj);
                 }
             }

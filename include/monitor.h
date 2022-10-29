@@ -11,7 +11,10 @@ namespace common
             added,
             removed,
             modified,
-            renamed
+            renamed,
+            INMOVEDFROM,
+            INMOVEDTO,
+            unknown,
         };
         struct change
         {
