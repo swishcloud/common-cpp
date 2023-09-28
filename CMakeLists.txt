@@ -25,11 +25,12 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Android")
 set(OPENSSL_ROOT_DIR "/opt/openssl_android")
 set(Boost_ROOT_DIR "/opt/boost-android")
 list(APPEND CMAKE_FIND_ROOT_PATH "${OPENSSL_ROOT_DIR}" "${Boost_ROOT_DIR}")
+else()
+add_subdirectory(test)
 endif()
 find_package(OpenSSL REQUIRED)
 find_package(Boost REQUIRED)
 
-add_subdirectory(test)
 if (MSVC)
     # warning level 4 and all warnings as errors
     #add_compile_options(/W4 /WX)
