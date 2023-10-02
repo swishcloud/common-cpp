@@ -330,7 +330,7 @@ char *common::exec_cmd(const char *command, char **err)
 	char *err_str = NULL;
 	const int buffer_size = 128;
 	char buffer[buffer_size];
-	char *result = new char[1]{};
+	std::unique_ptr<char[]> result{new char[1]{}};
 	// Open pipe to file
 	FILE *pipe;
 #ifdef __linux__
@@ -342,19 +342,17 @@ char *common::exec_cmd(const char *command, char **err)
 	{
 		err_str = common::strcpy("popen failed!");
 		*err = err_str;
-		delete result;
 		return NULL;
 	}
 	while (fgets(buffer, buffer_size, pipe) != NULL)
 	{
-		size_t newsize = strlen(result) + strlen(buffer) + 1;
+		size_t newsize = strlen(result.get()) + strlen(buffer) + 1;
 		char *temp = new char[newsize];
-		char *temp2 = temp + strlen(result);
-		memcpy(temp, result, strlen(result));
+		char *temp2 = temp + strlen(result.get());
+		memcpy(temp, result.get(), strlen(result.get()));
 		memcpy(temp2, buffer, strlen(buffer));
 		temp[newsize - 1] = '\0';
-		delete (result);
-		result = temp;
+		result.reset(temp);
 	}
 #ifdef __linux__
 	pclose(pipe);
@@ -362,7 +360,7 @@ char *common::exec_cmd(const char *command, char **err)
 	_pclose(pipe);
 #endif
 	delete (err_str);
-	return result;
+	return result.release();
 } // namespace filesync
 
 std::string common::file_md5(const char *filename)
