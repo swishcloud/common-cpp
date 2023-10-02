@@ -83,3 +83,19 @@ BOOST_AUTO_TEST_CASE(filemonitor_test)
     monitor->read_async(monitor_cb, NULL);
     common::pause();
 }
+BOOST_AUTO_TEST_CASE(exec_cmd)
+{
+    auto p1 = ".cache/exec_cmd_test";
+    auto p2 = ".cache/exec_cmd_test2";
+    if (std::filesystem::exists(p1))
+    {
+        std::filesystem::remove(p1);
+    }
+    if (std::filesystem::exists(p2))
+    {
+        std::filesystem::remove(p2);
+    }
+
+    std::filesystem::create_directory(p1);
+    common::movebycmd(p1, p2);
+}

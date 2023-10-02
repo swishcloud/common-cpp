@@ -330,7 +330,7 @@ char *common::exec_cmd(const char *command, char **err)
 	char *err_str = NULL;
 	const int buffer_size = 128;
 	char buffer[buffer_size];
-	char *result = new char{};
+	char *result = new char[1]{};
 	// Open pipe to file
 	FILE *pipe;
 #ifdef __linux__
@@ -396,13 +396,13 @@ std::string common::file_md5(const char *filename)
 	if (!std::regex_search(cmd_resut, m, reg))
 	{
 		auto e_str = common::string_format("getting uuid failed.%s", cmd_resut);
-		delete[](err);
-		delete[](cmd_resut);
+		delete[] (err);
+		delete[] (cmd_resut);
 		throw exception(e_str);
 	}
 	std::string md5 = m[1].str();
-	delete[](err);
-	delete[](cmd_resut);
+	delete[] (err);
+	delete[] (cmd_resut);
 	return md5;
 }
 
