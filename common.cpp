@@ -460,6 +460,19 @@ int common::random_num(int least, int greatest)
 	}
 	return port;
 }
+std::string common::currentDateTime()
+{
+	time_t now = time(0);
+	struct tm tstruct;
+	char buf[80];
+	tstruct = *localtime(&now);
+	// Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+	// for more information about date/time format
+	strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+	std::regex re(":|-|\\.");
+	std::string res = std::regex_replace(buf, re, "");
+	return res;
+}
 common::error::error()
 {
 }

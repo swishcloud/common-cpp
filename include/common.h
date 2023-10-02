@@ -69,6 +69,7 @@ namespace common
 	bool compare_md5(const char *a, const char *b);
 	std::string trim_trailing_space(std::string str);
 	int random_num(int least, int greatest);
+	std::string currentDateTime();
 	struct error
 	{
 	private:

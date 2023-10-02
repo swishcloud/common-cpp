@@ -106,3 +106,7 @@ BOOST_AUTO_TEST_CASE(file_md5)
     common::print_info(md5);
     BOOST_ASSERT(md5 == "245b212b6d92f9ebb4d0bfe4665f4337");
 }
+BOOST_AUTO_TEST_CASE(currentDateTime)
+{
+    common::print_info(common::currentDateTime());
+}

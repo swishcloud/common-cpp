@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/test/COMMON-TEST",
             "args": [
-                "--run_test=file_md5"
+                "--run_test=currentDateTime"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
