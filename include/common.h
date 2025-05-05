@@ -64,6 +64,7 @@ namespace common
 	std::string url_encode(const char *str);
 	char *exec_cmd(const char *command, char **err);
 	std::string file_md5(const char *filename);
+	std::string file_sha256(const char *filename);
 	void movebycmd(std::string source, std::string destination);
 	size_t file_size(std::string path);
 	bool compare_md5(const char *a, const char *b);

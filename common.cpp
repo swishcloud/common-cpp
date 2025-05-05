@@ -12,6 +12,8 @@
 #else
 #include <dirent-win.h>
 #endif
+#include <openssl/types.h>
+#include <openssl/evp.h>
 
 class common_exception : public std::exception
 {
@@ -403,7 +405,65 @@ std::string common::file_md5(const char *filename)
 	delete[] (cmd_resut);
 	return md5;
 }
+std::string common::file_sha256(const char *filename)
+{
+	std::ifstream file(filename, std::ios::binary);
+	if (!file)
+	{
+		throw std::runtime_error("Could not open file");
+	}
 
+	EVP_MD_CTX *context = EVP_MD_CTX_new();
+	if (!context)
+	{
+		throw std::runtime_error("EVP_MD_CTX creation failed");
+	}
+
+	if (1 != EVP_DigestInit_ex(context, EVP_sha256(), nullptr))
+	{
+		EVP_MD_CTX_free(context);
+		throw std::runtime_error("Digest initialization failed");
+	}
+
+	char buffer[65536]; // 64KB buffer
+	while (file.read(buffer, sizeof(buffer)))
+	{
+		if (1 != EVP_DigestUpdate(context, buffer, file.gcount()))
+		{
+			EVP_MD_CTX_free(context);
+			throw std::runtime_error("Digest update failed");
+		}
+	}
+	if (!file.eof())
+	{
+		EVP_MD_CTX_free(context);
+		throw std::runtime_error("File read error");
+	}
+	if (1 != EVP_DigestUpdate(context, buffer, file.gcount()))
+	{
+		EVP_MD_CTX_free(context);
+		throw std::runtime_error("Digest update failed");
+	}
+
+	unsigned char hash[EVP_MAX_MD_SIZE];
+	unsigned int lengthOfHash = 0;
+
+	if (1 != EVP_DigestFinal_ex(context, hash, &lengthOfHash))
+	{
+		EVP_MD_CTX_free(context);
+		throw std::runtime_error("Digest finalization failed");
+	}
+
+	EVP_MD_CTX_free(context);
+
+	std::stringstream ss;
+	for (unsigned int i = 0; i < lengthOfHash; i++)
+	{
+		ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
+	}
+
+	return ss.str();
+}
 void common::movebycmd(std::string source, std::string destination)
 {
 	formalize_path(source);
