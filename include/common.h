@@ -31,7 +31,6 @@ namespace common
 	char *to_cstr(const wchar_t *orig, int size = -1);
 	std::string to_string(const wchar_t *orig);
 	std::wstring full_path(std::wstring path);
-	// result: 0 does not exist;1 directory;2 file.
 	bool file_exist(const char *filename);
 	void run_file(const wchar_t *filename);
 	int find_files(std::wstring path, std::vector<std::wstring> &files);
