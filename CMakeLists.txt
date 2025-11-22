@@ -66,6 +66,13 @@ configure_file(cmake/${TARGET_NAME}Config.cmake
         )
 message(---------------------${CMAKE_CXX_COMPILER_ID}-------${TARGET_NAME})
 install(EXPORT ${EXPORT_TARGET_NAME} NAMESPACE ${TARGET_NAME}:: DESTINATION ${ConfigPackageLocation})
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}/${TARGET_NAME}Config.cmake" DESTINATION ${ConfigPackageLocation})
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}/${TARGET_NAME}Config.cmake"
+"${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}/${TARGET_NAME}ConfigVersion.cmake" 
+DESTINATION ${ConfigPackageLocation})
 
 message(STATUS ---CMAKE_BUILD_TYPE:${CMAKE_BUILD_TYPE}"$<CONFIG:Debug>"---)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}/${TARGET_NAME}ConfigVersion.cmake"  COMPATIBILITY AnyNewerVersion
+)
