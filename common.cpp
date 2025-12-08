@@ -588,7 +588,7 @@ std::string common::trim_right(std::string str, std::string cutset)
 	return str;
 }
 
-void create_random_file(const std::filesystem::path &path, size_t size)
+void common::create_random_file(const std::filesystem::path &path, size_t size)
 {
 	std::ofstream out(path, std::ios::binary);
 
