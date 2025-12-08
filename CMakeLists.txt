@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(COMMON VERSION 0.1.0)
+project(COMMON VERSION 0.1.1)
 enable_testing()
 set(Boost_USE_STATIC_LIBS on)
 set(Boost_DEBUG true)

@@ -84,6 +84,7 @@ namespace common
 	};
 	void formalize_path(std::string &path);
 	std::string trim_right(std::string str, std::string cutset);
+	void create_random_file(const std::filesystem::path &path, size_t size);
 } // namespace common
 
 template <typename... Arg>

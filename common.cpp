@@ -14,6 +14,7 @@
 #endif
 #include <openssl/types.h>
 #include <openssl/evp.h>
+#include <random>
 
 class common_exception : public std::exception
 {
@@ -585,4 +586,26 @@ std::string common::trim_right(std::string str, std::string cutset)
 		}
 	}
 	return str;
+}
+
+void create_random_file(const std::filesystem::path &path, size_t size)
+{
+	std::ofstream out(path, std::ios::binary);
+
+	std::mt19937_64 rng{std::random_device{}()};
+	std::uniform_int_distribution<unsigned char> dist(0, 255);
+
+	const size_t chunk = 1024 * 1024; // 1 MB buffer
+	std::vector<unsigned char> buffer(chunk);
+
+	size_t written = 0;
+	while (written < size)
+	{
+		size_t to_write = std::min(chunk, size - written);
+		for (size_t i = 0; i < to_write; ++i)
+			buffer[i] = dist(rng);
+
+		out.write(reinterpret_cast<char *>(buffer.data()), to_write);
+		written += to_write;
+	}
 }
